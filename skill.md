@@ -116,6 +116,17 @@ Adjust based on cues: "obscure" → lower, "bangers" → raise, no preference �
 ### Building up a playlist across runs
 Use `append: true` on `spotify_crate_dig` to add tracks without replacing what's already there.
 
+### "Make a graphic" / shareable crate find card
+1. Gather track/album data via MCP tools (popularity, tracklist, artist info)
+2. Fact-check artist credits and history via web search — don't assume
+3. Use the `canvas-design` skill to create a 1080x1350 shareable image
+4. Match the visual aesthetic to the music's era and genre:
+   - 60s-70s soul/funk → warm amber, vinyl texture, aged tones
+   - 80s synth/electronic → era-appropriate palette
+   - 90s hip-hop → different treatment matching the period
+5. Include a "Spotify Popularity Audit" with data visualization (popularity bars, key stats)
+6. Add a compelling tagline that tells the story of why this music matters
+
 ## Important
 
 - The default playlist ID is `44GZli0wDLwExa9ttsAAai`
