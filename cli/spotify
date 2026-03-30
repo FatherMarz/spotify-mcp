@@ -1,0 +1,137 @@
+#!/usr/bin/env -S node --env-file=/Users/marcello/Documents/Development/personal/spotify-mcp/.env
+
+import { generate, ALL_GENRES } from './generate.js';
+
+const args = process.argv.slice(2);
+
+function usage() {
+  console.log(`
+  spotify — Deep Cuts playlist generator
+
+  Usage:
+    spotify --random            Generate playlist from random genres
+    spotify -g <genre>          Generate playlist for a genre (fuzzy match)
+    spotify -g rock,jazz,blues  Generate playlist for multiple genres
+    spotify ls                  List all available genres
+    spotify ls <query>          Search genres by name
+
+  Options:
+    -n <count>     Number of tracks (default: 30)
+    -p <min-max>   Popularity range 0-100 (default: 0-40)
+    -a, --append   Add tracks to existing playlist instead of replacing
+    --dry-run      Preview without updating the playlist
+
+  Examples:
+    spotify --random
+    spotify -g jazz
+    spotify -g "doom-metal,stoner-rock,sludge-metal"
+    spotify -g rock -n 50
+    spotify -g indie -p 20-60
+    spotify -p 0-10             Random genres, ultra-obscure
+    spotify ls metal
+`);
+}
+
+let mode = null;
+let genreArg = null;
+let count = 30;
+let dryRun = false;
+let popularity = null;
+let append = false;
+
+for (let i = 0; i < args.length; i++) {
+  switch (args[i]) {
+    case '--random':
+    case '-r':
+      mode = 'random';
+      break;
+    case '-g':
+    case '--genre':
+      mode = 'genre';
+      genreArg = args[++i];
+      break;
+    case 'ls':
+    case 'list':
+      mode = 'ls';
+      genreArg = args[i + 1] || null;
+      i = args.length;
+      break;
+    case '-n':
+    case '--count':
+      count = parseInt(args[++i], 10);
+      break;
+    case '-p':
+    case '--popularity':
+      const pArg = args[++i];
+      const parts = pArg.split('-').map(Number);
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        popularity = { min: parts[0], max: parts[1] };
+      } else if (parts.length === 1 && !isNaN(parts[0])) {
+        popularity = { min: 0, max: parts[0] };
+      } else {
+        console.error(`Invalid popularity format: "${pArg}" (use e.g. 0-40 or 50)`);
+        process.exit(1);
+      }
+      break;
+    case '--dry-run':
+      dryRun = true;
+      break;
+    case '--append':
+    case '-a':
+      append = true;
+      break;
+    case '--help':
+    case '-h':
+      usage();
+      process.exit(0);
+    default:
+      if (!mode && !args[i].startsWith('-')) {
+        mode = 'genre';
+        genreArg = args[i];
+      }
+  }
+}
+
+if (!mode) {
+  usage();
+  process.exit(0);
+}
+
+// --- List genres ---
+if (mode === 'ls') {
+  let genres = ALL_GENRES;
+  if (genreArg) {
+    const q = genreArg.toLowerCase();
+    genres = ALL_GENRES.filter(g => g.includes(q));
+    if (genres.length === 0) {
+      console.log(`No genres matching "${genreArg}"`);
+      process.exit(0);
+    }
+    console.log(`\nGenres matching "${genreArg}" (${genres.length}):\n`);
+  } else {
+    console.log(`\nAll genres (${genres.length}):\n`);
+  }
+
+  const cols = process.stdout.columns || 80;
+  const maxLen = Math.max(...genres.map(g => g.length)) + 2;
+  const perRow = Math.max(1, Math.floor(cols / maxLen));
+  for (let i = 0; i < genres.length; i += perRow) {
+    const row = genres.slice(i, i + perRow).map(g => g.padEnd(maxLen)).join('');
+    console.log(`  ${row}`);
+  }
+  console.log('');
+  process.exit(0);
+}
+
+// --- Generate ---
+const opts = { count, dryRun, append };
+if (popularity) opts.popularity = popularity;
+
+if (mode === 'genre') {
+  opts.genres = genreArg.split(',').map(g => g.trim().toLowerCase());
+}
+
+generate(opts).catch(err => {
+  console.error('Fatal error:', err.message);
+  process.exit(1);
+});
