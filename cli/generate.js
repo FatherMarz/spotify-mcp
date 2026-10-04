@@ -173,7 +173,6 @@ export async function generate({ genres: genreFilter, count = 30, popularity, dr
   console.log(`\nPlaylist ${append ? 'appended' : 'updated'} with ${selected.length} tracks.`);
   console.log(`https://open.spotify.com/playlist/${playlistId}`);
 
-  // Save history
   const historyDir = join(__dirname, 'history');
   if (!existsSync(historyDir)) mkdirSync(historyDir);
 
@@ -198,7 +197,6 @@ export async function generate({ genres: genreFilter, count = 30, popularity, dr
   console.log(`Saved history to ${mdPath}`);
 }
 
-// If run directly (cron mode)
 const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url).endsWith(process.argv[1].replace(/.*\//, ''));
 if (isDirectRun && !process.argv[1].endsWith('spotify')) {
   const count = parseInt(process.env.TRACK_COUNT || '30', 10);

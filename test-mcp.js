@@ -1,8 +1,10 @@
 import { spawn } from 'child_process';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const child = spawn('node', ['--env-file=.env', 'mcp/index.js'], {
   stdio: ['pipe', 'pipe', 'pipe'],
-  cwd: '/path/to/spotify-mcp',
+  cwd: dirname(fileURLToPath(import.meta.url)),
 });
 
 let stdout = '';

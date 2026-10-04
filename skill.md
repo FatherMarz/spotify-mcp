@@ -43,16 +43,16 @@ You have full control of the user's Spotify via MCP tools. You can play/pause/sk
 
 ## CLI Fallback
 
-The CLI at `~/bin/spotify` still works for quick terminal use:
+The `spotify` CLI (`cli/spotify` in the repo) still works for quick terminal use:
 ```
-~/bin/spotify --random                    # random genres
-~/bin/spotify -g <genre1,genre2,...>       # specific genres (fuzzy matched)
-~/bin/spotify -p <min>-<max>              # popularity range 0-100 (default 0-40)
-~/bin/spotify -n <count>                  # track count (default 30)
-~/bin/spotify -a, --append                # append instead of replace
-~/bin/spotify --dry-run                   # preview only
-~/bin/spotify ls                          # list all 1372 genres
-~/bin/spotify ls <query>                  # search genres
+spotify --random                    # random genres
+spotify -g <genre1,genre2,...>       # specific genres (fuzzy matched)
+spotify -p <min>-<max>              # popularity range 0-100 (default 0-40)
+spotify -n <count>                  # track count (default 30)
+spotify -a, --append                # append instead of replace
+spotify --dry-run                   # preview only
+spotify ls                          # list all 1372 genres
+spotify ls <query>                  # search genres
 ```
 
 Prefer MCP tools over the CLI — they return structured data and can be called in parallel.

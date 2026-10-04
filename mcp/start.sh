@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /path/to/spotify-mcp
+cd "$(dirname "$0")/.." || exit 1
 exec node --env-file=.env mcp/index.js
