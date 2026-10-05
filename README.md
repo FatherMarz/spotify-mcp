@@ -72,3 +72,7 @@ To refresh the playlist daily at 7am, add this to `crontab -e`, using the output
 - Server missing in `/mcp`: re-run the `claude mcp add` command and restart Claude Code.
 
 Built by Marcello Delcaro, AI-assisted.
+
+## License
+
+MIT
